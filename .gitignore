@@ -11,3 +11,6 @@ src/rest/mydatabase
 __pycache__/
 *.py[cod]
 *$py.class
+
+# cache files 
+.eslintcache
