@@ -2,24 +2,21 @@ services:
   api:
     build: .
     container_name: api
-    working_dir: /src/rest
-    command: python manage.py runserver 0.0.0.0:8000
+    command: bash -c "cd /src/rest && python manage.py runserver 0.0.0.0:8000"
     ports:
       - "8000:8000"
     depends_on:
       - mongo
     volumes:
+      - ${ADBREW_CODEBASE_PATH}/tmp:/tmp
       - ${ADBREW_CODEBASE_PATH}:/src
 
   app:
     build: .
     container_name: app
-    working_dir: /src/app
-    command: bash -c "yarn install && yarn start"
+    command: bash -c "cd /src/app && yarn install && yarn start"
     ports:
       - "3000:3000"
-    depends_on:
-      - api
     volumes:
       - ${ADBREW_CODEBASE_PATH}:/src
 
@@ -31,3 +28,4 @@ services:
       - "27017:27017"
     volumes:
       - ${ADBREW_CODEBASE_PATH}/db:/data/db
+    command: /usr/bin/mongod --bind_ip 0.0.0.0
