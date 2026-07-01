@@ -10,6 +10,13 @@ RUN apt-get update && \
     nginx \
     git
 
+# Install Node.js 16
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+RUN apt-get install -y nodejs
+
+# Install Yarn
+RUN npm install -g yarn
+
 ENV ENV_TYPE=staging
 ENV MONGO_HOST=mongo
 ENV MONGO_PORT=27017
