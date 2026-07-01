@@ -12,12 +12,14 @@ services:
       - ${ADBREW_CODEBASE_PATH}:/src
 
   app:
-    image: node:16
+    build: .
     container_name: app
     working_dir: /src/app
     command: bash -c "yarn install && yarn start"
     ports:
       - "3000:3000"
+    depends_on:
+      - api
     volumes:
       - ${ADBREW_CODEBASE_PATH}:/src
 
