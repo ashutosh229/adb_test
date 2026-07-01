@@ -5,16 +5,30 @@ from rest_framework import status
 import json, logging, os
 from pymongo import MongoClient
 
-mongo_uri = 'mongodb://' + os.environ["MONGO_HOST"] + ':' + os.environ["MONGO_PORT"]
-db = MongoClient(mongo_uri)['test_db']
+mongo_uri = "mongodb://" + os.environ["MONGO_HOST"] + ":" + os.environ["MONGO_PORT"]
+db = MongoClient(mongo_uri)["test_db"]
+
 
 class TodoListView(APIView):
-
     def get(self, request):
-        # Implement this method - return all todo items from db instance above.
-        return Response({}, status=status.HTTP_200_OK)
-        
-    def post(self, request):
-        # Implement this method - accept a todo item in a mongo collection, persist it using db instance above.
-        return Response({}, status=status.HTTP_200_OK)
+        todos = list(db.todos.find())
 
+        for todo in todos:
+            todo["_id"] = str(todo["_id"])
+
+        return Response(todos, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        description = request.data.get("description")
+
+        if not description:
+            return Response(
+                {"message": "Description is required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        db.todos.insert_one({"description": description})
+
+        return Response(
+            {"message": "Todo created successfully"}, status=status.HTTP_201_CREATED
+        )
