@@ -22,6 +22,35 @@ export function App() {
     fetchTodos();
   }, []);
 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (!description.trim()) {
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:8000/todos/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          description,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create todo.");
+      }
+
+      setDescription("");
+      await fetchTodos();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="App">
       <div>
@@ -34,19 +63,19 @@ export function App() {
       </div>
       <div>
         <h1>Create a ToDo</h1>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div>
             <label htmlFor="todo">ToDo: </label>
+            <input
+              id="todo"
+              type="text"
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+            />
           </div>
           <div style={{ marginTop: "5px" }}>
-            <button>Add ToDo!</button>
+            <button type="submit">Add ToDo!</button>
           </div>
-          <input
-            id="todo"
-            type="text"
-            value={description}
-            onChange={(event) => setDescription(event.target.value)}
-          />
         </form>
       </div>
     </div>
