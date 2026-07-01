@@ -1,3 +1,13 @@
+# developer-specific files
 Decisions.md 
 Doubts.md 
 TODO.md
+
+# db files 
+src/db/ 
+src/rest/mydatabase
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
