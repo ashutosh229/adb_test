@@ -19,16 +19,24 @@ class TodoListView(APIView):
         return Response(todos, status=status.HTTP_200_OK)
 
     def post(self, request):
-        description = request.data.get("description")
+        description = request.data.get("description", "").strip()
 
         if not description:
             return Response(
-                {"message": "Description is required"},
+                {"error": "Description is required."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        db.todos.insert_one({"description": description})
+        result = db.todos.insert_one(
+            {
+                "description": description,
+            }
+        )
 
         return Response(
-            {"message": "Todo created successfully"}, status=status.HTTP_201_CREATED
+            {
+                "_id": str(result.inserted_id),
+                "description": description,
+            },
+            status=status.HTTP_201_CREATED,
         )
